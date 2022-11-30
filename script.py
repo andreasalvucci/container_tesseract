@@ -111,20 +111,30 @@ while True:
         r = orig[startY:endY, startX:endX]
 
         #configuration setting to convert image to string.  
-        configuration = ("-l ita --oem 1 --psm 8")
+        configuration = ("-l ita --oem 1 --psm 6")
         ##This will recognize the text from the image of bounding box
         text = pytesseract.image_to_string(r, config=configuration)
 
         # append bbox coordinate and associated text to the list of results 
-        results.append(((startX, startY, endX, endY), text))
+        results.append(text)
 
 
         orig_image = orig.copy()
 
 
-    print(text)
+    print(results)
+    results.reverse()
+    rawText=""
+    for element in results:
+        print(f"elemento ", element)
+        rawText = rawText+element
+    
+    print(f"testo grezzo: ", rawText)
+
+
+
     print("Immagine processata, invio il risultato al client...")
-    cleanedText = text.replace(" ", "")
+    cleanedText = rawText.replace(" ", "")
     cleanedText = cleanedText.replace("\n","")
     cleanedText = re.sub('[^A-Za-z0-9]+', '', cleanedText)
 
