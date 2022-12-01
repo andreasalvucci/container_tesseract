@@ -101,6 +101,7 @@ while True:
     boxes = non_max_suppression(np.array(boxes), probs=confidence_val)
 
     results = []
+    textResult = []
     for (startX, startY, endX, endY) in boxes:
         startX = int(startX * rW)
         startY = int(startY * rH)
@@ -116,16 +117,19 @@ while True:
         text = pytesseract.image_to_string(r, config=configuration)
 
         # append bbox coordinate and associated text to the list of results 
-        results.append(text)
+        results.append(((startX, startY, endX, endY), text))
+        textResult.append(text)
 
 
         orig_image = orig.copy()
 
 
-    print(results)
-    results.reverse()
+        
+
+
+
     rawText=""
-    for element in results:
+    for element in textResult:
         print(f"elemento ", element)
         rawText = rawText+element
     
