@@ -1,27 +1,30 @@
-
+# Usage: python client.py path_to_image
 import socket 
 import tqdm
+import sys
+
+if(len(sys.argv)!=2):
+    print("Usage: client.py <image_path>")
+    exit()
 
 
+
+pathName = sys.argv[1]
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(("localhost",1312))
+client.connect(("127.0.0.1",1312))
 print("Connesso col server")
-file = open("image.jpg","rb")
+file = open(pathName,"rb")
 
 image_data = file.read(2048)
-cont = 0
 
 
 while image_data:
-    
     client.send(image_data)
-    print(f"Inviato chunk ", cont)
-    cont+=1
     image_data = file.read(2048)
 
 client.shutdown(socket.SHUT_WR)
 
-print("Ora aspetto la risposta del server")
+print("Ora aspetto la risposta del server...")
 
 result_text = ""
 
@@ -29,9 +32,9 @@ temp = client.recv(1024).decode()
 result_text+=temp
 
 while temp:
-    result_text+=temp
     temp = client.recv(1024).decode()
+    result_text+=temp
 
-print(result_text)
+print(f"Testo riconosciuto: ", result_text)
 client.close()
 file.close()

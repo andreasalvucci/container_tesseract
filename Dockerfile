@@ -27,7 +27,10 @@ RUN (apt-get autoremove -y; \
 
 ENV QT_X11_NO_MITSHM=1
 
+EXPOSE 1312
+
 
 COPY . .
 
-CMD [ "python", "./script.py" ]
+COPY ita.traineddata /usr/share/tesseract-ocr/4.00/tessdata/
+CMD [ "python", "-u","./script.py" , "--ip", "127.0.0.1"]

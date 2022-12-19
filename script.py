@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import imutils
+import re
 from imutils.object_detection import non_max_suppression
 import pytesseract
 from matplotlib import pyplot as plt
@@ -13,7 +14,7 @@ server.listen()
 
 
 while True:
-    print("Il server è in ascolto sulla porta {}".format(server.getsockname()[1]))
+    print("Il server è in ascolto")
     client_socket, client_address = server.accept()
     print(f"Accettata la connessione con ",client_address)
 
@@ -23,13 +24,10 @@ while True:
 
     print("Ricevo l'immagine dal client...")
     image_chunk = client_socket.recv(2048)
-    print(f"Ricevuto il chunk ", cont)
     while image_chunk:
-        print(image_chunk)
         cont+=1
         file.write(image_chunk)
         image_chunk = client_socket.recv(2048)
-        print(f"Ricevuto il chunk ", cont)
 
 
 
@@ -99,6 +97,7 @@ while True:
     boxes = non_max_suppression(np.array(boxes), probs=confidence_val)
 
     results = []
+    textResult = []
     for (startX, startY, endX, endY) in boxes:
         startX = int(startX * rW)
         startY = int(startY * rH)
@@ -109,21 +108,39 @@ while True:
         r = orig[startY:endY, startX:endX]
 
         #configuration setting to convert image to string.  
-        configuration = ("-l eng --oem 1 --psm 8")
+        configuration = ("-l ita --oem 1 --psm 6")
         ##This will recognize the text from the image of bounding box
         text = pytesseract.image_to_string(r, config=configuration)
 
         # append bbox coordinate and associated text to the list of results 
         results.append(((startX, startY, endX, endY), text))
+        textResult.append(text)
 
 
         orig_image = orig.copy()
 
 
+        
+
+
+
+    rawText=""
+    for element in textResult:
+        print(f"elemento ", element)
+        rawText = rawText+element
+    
+    print(f"testo grezzo: ", rawText)
+
+
 
     print("Immagine processata, invio il risultato al client...")
+    cleanedText = rawText.replace(" ", "")
+    cleanedText = cleanedText.replace("\n","")
+    cleanedText = re.sub('[^A-Za-z0-9]+', '', cleanedText)
 
-    client_socket.send(text.encode())
+    print(cleanedText)
+
+    client_socket.send(cleanedText.encode())
 
     client_socket.close()
 
