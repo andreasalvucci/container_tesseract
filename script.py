@@ -13,7 +13,7 @@ server.listen()
 
 
 while True:
-    print("Il server è in ascolto")
+    print("Il server è in ascolto sulla porta {}".format(server.getsockname()[1]))
     client_socket, client_address = server.accept()
     print(f"Accettata la connessione con ",client_address)
 
