@@ -9,7 +9,7 @@ import socket, select
 
 
 server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-server.bind(("localhost",1312))
+server.bind(("localhost",80))
 server.listen()
 
 
