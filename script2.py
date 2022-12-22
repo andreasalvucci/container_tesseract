@@ -131,7 +131,7 @@ def process_image():
     print(f"testo grezzo: ", rawText)
 
     # Return the result as a JSON response
-    return jsonify({"result": result})
+    return jsonify({"result": rawText})
 
 
 if __name__ == '__main__':

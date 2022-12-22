@@ -33,4 +33,4 @@ EXPOSE 1312
 COPY . .
 
 COPY ita.traineddata /usr/share/tesseract-ocr/4.00/tessdata/
-CMD [ "python","./script2.py"]
+CMD [ "python","./script.py"]
